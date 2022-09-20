@@ -12,9 +12,12 @@ namespace TreeSize.App
 {
     internal class MainViewModel : BaseViewModel
     {
-
+        private bool _isSelected;
+        private bool _isExpanded;
         private string _selectedDrive;
-        private ObservableCollection<string> _logicalDrives;       
+        private ObservableCollection<string> _logicalDrives;
+        public MainViewModel Parent { get; }
+        public ObservableCollection<MainViewModel> Children { get; }
 
         public string SelectedDrive
         {
@@ -32,6 +35,33 @@ namespace TreeSize.App
             {
                 _logicalDrives = value;
                 OnPropertyChanged();
+            }
+        }
+       
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (value != _isSelected)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged();
+
+                }
+            }
+        }
+
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                if (value != _isExpanded)
+                {
+                    _isExpanded = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
