@@ -38,11 +38,11 @@ namespace TreeSize.App
         public MainViewModel()
         {
             LogicalDrives = new ObservableCollection<string>();
-            //foreach (var logicalDrive in Directory.GetLogicalDrives())
-            //{
-            //    LogicalDrives.Add(logicalDrive);
-            //}
-            LogicalDrives = new ObservableCollection<string> { @"d:\efi", @"d:\11111", @"d:\openServer" };
+            foreach (var logicalDrive in Directory.GetLogicalDrives())
+            {
+                LogicalDrives.Add(logicalDrive);
+            }
+            //LogicalDrives = new ObservableCollection<string> { @"d:\efi", @"d:\11111", @"d:\openServer" };
             SelectedDrive = LogicalDrives[0];
         }
     } 

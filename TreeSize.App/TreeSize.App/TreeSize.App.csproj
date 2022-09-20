@@ -11,4 +11,8 @@
     <ProjectReference Include="..\TreeSize.Core\TreeSize.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
+
 </Project>

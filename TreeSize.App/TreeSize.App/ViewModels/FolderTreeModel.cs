@@ -47,25 +47,8 @@ namespace TreeSize.App
 
         public ObservableCollection<FolderTreeViweModel> LoadChildren()
         {
-            CurrentDirectory currentDirectory = new CurrentDirectory(InitialPath);
-            Name = currentDirectory.Name;
-
-            foreach (var firstLevelItem in currentDirectory.GetDirectoryContent())
-            {
-                FolderTreeViweModel contentForTree = new FolderTreeViweModel(firstLevelItem);
-                Content.Add(contentForTree);
-
-                CurrentDirectory subDirectory = new CurrentDirectory(contentForTree.InitialPath);
-                contentForTree.Name = subDirectory.Name;
-                foreach (var secondLevelItem in subDirectory.GetDirectoryContent())
-                {
-                    FolderTreeViweModel contentForTreeSecondLevel = new FolderTreeViweModel(secondLevelItem);
-                    contentForTree.Content.Add(contentForTreeSecondLevel);
-                    CurrentDirectory subsubDirectory = new CurrentDirectory(contentForTreeSecondLevel.InitialPath);
-                    contentForTreeSecondLevel.Name = subsubDirectory.Name;
-                }
-            }
-            return Content;
+            Content.Clear();
+            return this.GetContent();
         }
     }
 }
