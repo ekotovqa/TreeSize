@@ -15,17 +15,6 @@ namespace TreeSize.Core
             if (string.IsNullOrEmpty(directoryPath)) throw new ArgumentException("Invalid path");
             DirectoryPath = directoryPath;
             Name = Path.GetFileName(directoryPath);
-            //Content = new ObservableCollection<CurrentDirectory>();
-
-            //new Task(() =>
-            //{
-            //    foreach (var subDirectory in GetDirectoryContent())
-            //    {
-            //        Content.Add(new CurrentDirectory(subDirectory));
-            //        ContentHandler?.Invoke(Content);
-            //    }
-                
-            //}).Start();
         }
 
         private IEnumerable<string> GetAllDirectoryFiles()
@@ -64,8 +53,13 @@ namespace TreeSize.Core
             }           
             return result;
         }
+        public enum Get
+        {
+            files,
+            directories,
+        }
 
-        public IEnumerable<string> GetDirectoryContent()
+        public IEnumerable<string> GetDirectoryContent(Get type)
         {
             if (File.Exists(DirectoryPath)) return Enumerable.Empty<string>();
             if (!Directory.Exists(DirectoryPath))
@@ -75,7 +69,9 @@ namespace TreeSize.Core
             }
             try
             {
-                return Directory.EnumerateDirectories(DirectoryPath).Union(Directory.EnumerateFiles(DirectoryPath, "*.*"));               
+                if (type == Get.directories) return Directory.EnumerateDirectories(DirectoryPath);
+                return Directory.EnumerateFiles(DirectoryPath, "*.*");
+                               
             }
             catch (UnauthorizedAccessException e)
             {

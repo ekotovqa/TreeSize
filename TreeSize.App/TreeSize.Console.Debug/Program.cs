@@ -1,29 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using TreeSize.Core;
-string directoryPath = @"d:\efi";
-
-//c:\Users\evgen\AppData\Roaming\Microsoft\Windows\Start Menu
+string directoryPath = @"c:\";
 
 CurrentDirectory currentDirectory = new CurrentDirectory(directoryPath);
-//CurrentDirectory.SizeHandler += ShowOnConsole;
-CurrentDirectory.ContentHandler += Show;
+CurrentDirectory.SizeHandler += ShowOnConsole;;
 
-void Show(ObservableCollection<CurrentDirectory> obj)
+
+foreach (var subDirectory in currentDirectory.GetDirectoryContent(CurrentDirectory.Get.directories))
 {
-    
-        Console.WriteLine(obj.Count);
-
+    CurrentDirectory.GetItemSize(subDirectory);
 }
 
-//foreach (var subDirectory in currentDirectory.GetDirectoryContent())
-//{
-//    //Console.WriteLine($"{subDirectory.Replace($"{directoryPath}", "")}");
-//    CurrentDirectory.GetItemSize(subDirectory);
-//}
-Console.WriteLine("GOGO");
-Thread.Sleep(5000);
-Thread.Sleep(5000);
-var result = 1024;
 
 
 void ShowOnConsole(long size)

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using TreeSize.Core;
@@ -16,8 +18,42 @@ namespace TreeSize.App
         private bool _isExpanded;
         private string _selectedDrive;
         private ObservableCollection<string> _logicalDrives;
-        public MainViewModel Parent { get; }
-        public ObservableCollection<MainViewModel> Children { get; }
+        private ObservableCollection<FoldersTreeViewModel> _foldersTreeViewModels;
+        private ObservableCollection<FilesTreeViewModel> _filesTreeViewModels;
+        public FoldersTreeViewModel TreeViewModel { get; set; }
+
+        public IList FolderContent
+        {
+            get
+            {
+                return new CompositeCollection 
+                {
+                    new CollectionContainer { Collection = FoldersTreeViewModels },
+                    new CollectionContainer { Collection = FilesTreeViewModels }
+                };
+            }
+            set { }
+        }
+
+        public ObservableCollection<FilesTreeViewModel> FilesTreeViewModels
+        {
+            get => _filesTreeViewModels;
+            set
+            {
+                _filesTreeViewModels = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<FoldersTreeViewModel> FoldersTreeViewModels
+        {
+            get => _foldersTreeViewModels;
+            set
+            {
+                _foldersTreeViewModels = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string SelectedDrive
         {
@@ -67,6 +103,8 @@ namespace TreeSize.App
 
         public MainViewModel()
         {
+            FoldersTreeViewModels = new ObservableCollection<FoldersTreeViewModel> ();
+            FilesTreeViewModels = new ObservableCollection<FilesTreeViewModel> ();
             LogicalDrives = new ObservableCollection<string>();
             foreach (var logicalDrive in Directory.GetLogicalDrives())
             {

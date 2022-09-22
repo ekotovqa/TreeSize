@@ -6,19 +6,19 @@
         xmlns:local="clr-namespace:TreeSize.App" d:DataContext="{d:DesignInstance Type=local:MainViewModel}"
         mc:Ignorable="d"
         Title="TreeSize" Height="500" Width="800">
-    
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="500"/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="400"/>
+            <RowDefinition Height="450"/>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Select drive</TextBlock>
@@ -28,21 +28,22 @@
                   SelectedItem="{Binding SelectedDrive}">
         </ComboBox>
 
-        <Button  x:Name="startButton" Grid.Column="3" Content="Start analyze"
+        <Button  x:Name="startButton" Grid.Column="2"  Content="Start analyze"
+                 
                  Click="Button_Click">
         </Button>
 
-
-        <DataGrid Grid.Row="2" Grid.ColumnSpan="3">
+        <DataGrid Grid.Row="2" Grid.ColumnSpan="4">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Path" Width="500"/>
                 <DataGridTextColumn Header="Size" Width="100"/>
                 <DataGridTextColumn Header="Folders" Width="100"/>
                 <DataGridTextColumn Header="Files" Width="100"/>
             </DataGrid.Columns>
+
         </DataGrid>
 
-        <TreeView x:Name ="fileTree" Grid.Row="3" Grid.ColumnSpan="3" 
+        <TreeView x:Name ="fileTree" Grid.Row="3" Grid.ColumnSpan="4" ItemsSource="{Binding FoldersTreeViewModels}" 
                   TreeViewItem.Expanded="fileTree_Expanded">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
@@ -56,16 +57,20 @@
                     </Style.Triggers>
                 </Style>
             </TreeView.ItemContainerStyle>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Content}">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type local:FoldersTreeViewModel}" ItemsSource="{Binding Children}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" />
+                        <Image Width="16" Height="16" Margin="0,0,5,0" Source="Images\folder.png"/>
+                        <TextBlock Text="{Binding FolderName}" Margin="0,0,4,0" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:FilesTreeViewModel}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Width="16" Height="16" Margin="0,0,5,0" Source="Images\file.png" />
+                        <TextBlock Text="{Binding FileName}" Margin="0,0,4,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
         </TreeView>
-
-
-
     </Grid>
 </Window>

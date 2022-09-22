@@ -30,16 +30,16 @@ namespace TreeSize.App
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-            FolderTreeViweModel folderTreeViweModel = new FolderTreeViweModel(selectedDrive.SelectedItem.ToString());
-            //startButton.Content = "Stop";
-            fileTree.ItemsSource = folderTreeViweModel.GetContent();
+            FoldersTreeViewModel folderTreeViweModel = new FoldersTreeViewModel(selectedDrive.SelectedItem.ToString());
+            folderTreeViweModel.GetContent();
+            _mainViewModel.FoldersTreeViewModels = folderTreeViweModel.Content;
+            _mainViewModel.FilesTreeViewModels = folderTreeViweModel.Files;
         }
          
         private void fileTree_Expanded(object sender, RoutedEventArgs e)
         {
             var treeViewItem = (TreeViewItem)e.OriginalSource;
-            var node = (FolderTreeViweModel)treeViewItem.Header;
+            var node = (FoldersTreeViewModel)treeViewItem.Header;
             node.LoadChildren();
         }
     }
