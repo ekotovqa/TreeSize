@@ -1,21 +1,21 @@
 ﻿using System.Collections.ObjectModel;
 using TreeSize.Core;
-string directoryPath = @"c:\";
+string directoryPath = @"d:\efi";
 
 CurrentDirectory currentDirectory = new CurrentDirectory(directoryPath);
-CurrentDirectory.SizeHandler += ShowOnConsole;;
+currentDirectory.SizeHandler += ShowOnConsole;
 
 
 foreach (var subDirectory in currentDirectory.GetDirectoryContent(CurrentDirectory.Get.directories))
 {
-    CurrentDirectory.GetItemSize(subDirectory);
+    currentDirectory.GetDirectorySize();
 }
 
 
 
-void ShowOnConsole(long size)
+void ShowOnConsole(string size)
 {
-    Console.WriteLine(BytesToString(size));
+    Console.WriteLine(size);
 }
 
 static string BytesToString(long byteCount) // метод для вывода информации о размере файла

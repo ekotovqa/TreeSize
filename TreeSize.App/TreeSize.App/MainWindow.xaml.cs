@@ -20,27 +20,41 @@ namespace TreeSize.App
 {
     public partial class MainWindow
     {
-        readonly  MainViewModel _mainViewModel;
+
+        private ObservableCollection<TreeFolderItemViewModel> TreeFolderItemViewModel { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            _mainViewModel = new MainViewModel();
-            DataContext = _mainViewModel;
+            DataContext = new MainViewModel();
+            TreeFolderItemViewModel = new ObservableCollection<TreeFolderItemViewModel>();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            FoldersTreeViewModel folderTreeViweModel = new FoldersTreeViewModel(selectedDrive.SelectedItem.ToString());
-            folderTreeViweModel.GetContent();
-            _mainViewModel.FoldersTreeViewModels = folderTreeViweModel.Content;
-            _mainViewModel.FilesTreeViewModels = folderTreeViweModel.Files;
+            TreeFolderItemViewModel.Clear();
+            var folderPath = selectedDrive.SelectedItem.ToString();
+
+            var treeFolderItemViewModel = new TreeFolderItemViewModel()
+            {
+                Name = System.IO.Path.GetFileName(folderPath),
+                FullName = folderPath,
+                IsFolder = true,
+                Source = TreeFolderItemViewModel,
+            };
+            TreeFolderItemViewModel.Add(treeFolderItemViewModel);
+
+            treeFolderItemViewModel.IsExpanded = true;
+            Tree.ItemsSource = TreeFolderItemViewModel;
         }
-         
-        private void fileTree_Expanded(object sender, RoutedEventArgs e)
+
+        private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var treeViewItem = (TreeViewItem)e.OriginalSource;
-            var node = (FoldersTreeViewModel)treeViewItem.Header;
-            node.LoadChildren();
+            e.Handled = true;
+            var listViewItem = (ListViewItem)sender;
+            if (listViewItem.DataContext is TreeFolderItemViewModel folderItem)
+            {
+                folderItem.IsExpanded = !folderItem.IsExpanded;
+            }
         }
     }
    

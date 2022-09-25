@@ -5,7 +5,7 @@ namespace TreeSize.Core
     public class CurrentDirectory
     {
         public string DirectoryPath { get; set; }
-        public static event Action<long> SizeHandler;
+        public event Action<string> SizeHandler;
         public static event Action<ObservableCollection<CurrentDirectory>>? ContentHandler;
         public string Name { get; set; }
         public ObservableCollection<CurrentDirectory> Content { get; set; }
@@ -83,27 +83,43 @@ namespace TreeSize.Core
             }
 
         }
-        static public void GetItemSize(string directoryPath)
+        public void GetDirectorySize()
         {
             Thread thread = new Thread(() =>
             {
                 int count = 0;
                 long size = 0;
-                if (File.Exists(directoryPath))
+                if (File.Exists(DirectoryPath))
                 {
-                    SizeHandler.Invoke(new FileInfo(directoryPath).Length);
+                    SizeHandler.Invoke(BytesToString(new FileInfo(DirectoryPath).Length));
                     return;
                 }
-                foreach (var item in new CurrentDirectory(directoryPath).GetAllDirectoryFiles())
+                foreach (var item in new CurrentDirectory(DirectoryPath).GetAllDirectoryFiles())
                 {
                     size += new FileInfo(item).Length;
                     count++;
-                    if (count % 100 == 0) SizeHandler.Invoke(size);
+                    if (count % 100 == 0) SizeHandler.Invoke(BytesToString(size));
                 }
-                SizeHandler.Invoke(size);
+                SizeHandler.Invoke(BytesToString(size));
             });
-            thread.Start();
-            
+            thread.Start();   
+        }
+        static public string GetFileSize(string fileSize)
+        {
+            if (!File.Exists(fileSize)) throw new ArgumentException("Invalid path");
+            return BytesToString(new FileInfo(fileSize).Length);
+        }
+
+        static string BytesToString(long byteCount) // метод для вывода информации о размере файла
+        {
+            string[] suf = { "Byt", "KB", "MB", "GB", "TB", "PB", "EB" };
+            if (byteCount == 0)
+                return "0" + suf[0];
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            return (Math.Sign(byteCount) * num).ToString() + " " + suf[place];
         }
     }
+
 }
