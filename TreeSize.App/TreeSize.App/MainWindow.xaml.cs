@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,14 +15,13 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using TreeSize.Core;
 
 namespace TreeSize.App
 {
     public partial class MainWindow
     {
+        private ObservableCollection<TreeFolderItemViewModel> TreeFolderItemViewModel { get; set; }       
 
-        private ObservableCollection<TreeFolderItemViewModel> TreeFolderItemViewModel { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -36,7 +36,7 @@ namespace TreeSize.App
 
             var treeFolderItemViewModel = new TreeFolderItemViewModel()
             {
-                Name = System.IO.Path.GetFileName(folderPath),
+                Name = folderPath,
                 FullName = folderPath,
                 IsFolder = true,
                 Source = TreeFolderItemViewModel,
@@ -45,6 +45,7 @@ namespace TreeSize.App
 
             treeFolderItemViewModel.IsExpanded = true;
             Tree.ItemsSource = TreeFolderItemViewModel;
+            
         }
 
         private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 
 namespace TreeSize.App
@@ -6,7 +7,7 @@ namespace TreeSize.App
     internal class MainViewModel : BaseViewModel
     {
         private string _selectedDrive;
-        private ObservableCollection<string> _logicalDrives;
+        private ObservableCollection<string> _drives;
         public string SelectedDrive
         {
             get => _selectedDrive;
@@ -16,25 +17,24 @@ namespace TreeSize.App
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<string> LogicalDrives
+        public ObservableCollection<string> Drives
         {
-            get => _logicalDrives;
+            get => _drives;
             set
             {
-                _logicalDrives = value;
+                _drives = value;
                 OnPropertyChanged();
             }
         }
 
         public MainViewModel()
         {
-            LogicalDrives = new ObservableCollection<string>();
-            foreach (var logicalDrive in Directory.GetLogicalDrives())
+            Drives = new ObservableCollection<string>();
+            foreach (var drive in DriveInfo.GetDrives())
             {
-                LogicalDrives.Add(logicalDrive);
+                if (drive.IsReady) Drives.Add(drive.Name);
             }
-            //LogicalDrives = new ObservableCollection<string> { @"d:\efi", @"d:\11111", @"d:\openServer" };
-            SelectedDrive = LogicalDrives[0];
+            SelectedDrive = Drives[0];
         }
     }
 }

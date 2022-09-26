@@ -92,7 +92,7 @@
         <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">Select drive</TextBlock>
 
         <ComboBox x:Name="selectedDrive" Grid.Row="0" Grid.Column="1" Width="60"  HorizontalAlignment="Left" 
-                  ItemsSource="{Binding LogicalDrives}" 
+                  ItemsSource="{Binding Drives}" 
                   SelectedItem="{Binding SelectedDrive}">
         </ComboBox>
 

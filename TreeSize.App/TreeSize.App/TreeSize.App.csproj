@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TreeSize.Core\TreeSize.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Images\file.png" />
     <Resource Include="Images\folder.png" />
   </ItemGroup>

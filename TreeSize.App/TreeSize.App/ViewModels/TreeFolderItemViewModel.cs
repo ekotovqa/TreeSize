@@ -15,7 +15,7 @@ namespace TreeSize.App
         private int _foldersNumber = 0;
         private bool _isExpanded = false;
         private ObservableCollection<TreeFolderItemViewModel> _subFolderItems;
-        public event Action<string> SizeHandler;
+        public event EventHandler<string> SizeHandler;
 
         public string Name
         {
@@ -115,6 +115,8 @@ namespace TreeSize.App
                 Source.Insert(index, d);
                 d.FoldersNumber = d.GetSubFolderItems().Count;
                 d.FilesNumber = d.GetFiles().Count;
+                d.SizeHandler += D_SizeHandler;
+                d.GetFolderSize(d.FullName);
                 SubFolderItems.Add(d);
             });
 
@@ -125,6 +127,11 @@ namespace TreeSize.App
                 Source.Insert(index, f);
                 SubFolderItems.Add(f);
             });
+        }
+
+        private void D_SizeHandler(object? sender, string e)
+        {
+            if (sender is TreeFolderItemViewModel treeFolderItemViewModel) treeFolderItemViewModel.Size = e;
         }
 
         private void RemoveSubFolderItems()
@@ -146,7 +153,7 @@ namespace TreeSize.App
                 {
                     Name = Path.GetFileName(f),
                     FullName = f,
-                    Size = "0 Byt",//GetFolderSize(f),
+                    Size = "0 Byt",
                     Source = Source                   
                 })
                 .ToList();
@@ -199,7 +206,7 @@ namespace TreeSize.App
         private string GetFileSize(string filePath)
         {
             if (!File.Exists(filePath)) throw new ArgumentException("Invalid path");
-            return BytesToString(new FileInfo(filePath).Length);
+            return BytesToStringConvertor.BytesToString(new FileInfo(filePath).Length);
         }
 
         public string GetFolderSize(string folderPath)
@@ -212,12 +219,12 @@ namespace TreeSize.App
                 {
                     size += new FileInfo(item).Length;
                     count++;
-                    if (count % 100 == 0) SizeHandler.Invoke(BytesToString(size));
+                    if (count % 100 == 0) SizeHandler.Invoke(this, BytesToStringConvertor.BytesToString(size));
                 }
-                SizeHandler.Invoke(BytesToString(size));
+                SizeHandler.Invoke(this, BytesToStringConvertor.BytesToString(size));
             });
             thread.Start();
-            return BytesToString(size);
+            return BytesToStringConvertor.BytesToString(size);
         }
 
         private IEnumerable<string> GetAllDirectoryFiles(string folderPath)
@@ -229,7 +236,6 @@ namespace TreeSize.App
                 throw new ArgumentException("Invalid directory path");
             }
             dirs.Push(folderPath);
-
             while (dirs.Count > 0)
             {
                 string currentDirectory = dirs.Pop();
@@ -255,17 +261,6 @@ namespace TreeSize.App
                 result = result.Concat(subDirectoresFiles);
             }
             return result;
-        }
-
-        private string BytesToString(long byteCount)
-        {
-            string[] suf = { "Byt", "KB", "MB", "GB", "TB", "PB", "EB" };
-            if (byteCount == 0)
-                return "0" + suf[0];
-            long bytes = Math.Abs(byteCount);
-            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
-            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
-            return (Math.Sign(byteCount) * num).ToString() + " " + suf[place];
-        }
+        }    
     }
 }
